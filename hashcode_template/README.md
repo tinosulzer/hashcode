@@ -1,3 +1,3 @@
 ## Google HashCode
 
-Template project structure
+Template project structure 
