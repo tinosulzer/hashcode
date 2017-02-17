@@ -3,11 +3,12 @@
 ---
 #### Score Benchmarks
 Total teams: 230
-Winner: 407
-10th: 393
-20th: 388
-50th: 371
-100th: 325
+
+* Winner: 407
+* 10th: 393
+* 20th: 388
+* 50th: 371
+* 100th: 325
 
 ---
 
