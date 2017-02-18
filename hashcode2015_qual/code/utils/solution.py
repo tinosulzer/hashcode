@@ -6,8 +6,12 @@ class Solution:
         self.problem = problem
         self.locations = {}
         self.pools = {}
+        self.rows = {}
+        self.pool_caps = {pool: 0 for pool in range(self.problem.P)} # Capacity for each pool
         self.unallocated = list(range(self.problem.M))
         self.available_slots = problem.available.copy()
+        for r in range(self.problem.R): # Tuple of capacity and free space for each row
+            self.rows[r] = (0,sum([self.available_slots[(r,slot)] for slot in range(self.problem.S)]))
 
     def add_server(self, s, loc, p):
         """Adds server s to location loc and pool p."""
@@ -30,6 +34,12 @@ class Solution:
             self.available_slots[(loc[0], loc[1] + i)] = False
         self.locations[s] = loc
         self.pools[s] = p
+        # Update row capacity
+        self.rows[loc[0]][0] += self.problem.capacities[s]
+        # Update row free spaces
+        self.rows[loc[0]][1] -= self.problem.sizes[s]
+        # Update pool capacity
+        self.pool_caps[p] += self.problem.capacities[s]
         self.unallocated.remove(s)
         return True
 
@@ -45,6 +55,46 @@ class Solution:
         self.unallocated.append(s)
         return True
 
+    def add_server_loc(self, s, loc):
+        """Adds server s to location loc without assigning pool."""
+        if not self.problem.available[loc]:
+            print("Trying to allocate server to unavailable slot.")
+            return False
+        elif (s not in self.unallocated) or (s in self.locations) or (s in self.pools):
+            print("Server already allocated")
+            return False
+        for i in range(self.problem.sizes[s]):
+            if loc[1] + i >= self.problem.S:
+                print("Server extends past end of row.")
+                return False
+            elif not self.available_slots[(loc[0], loc[1] + i)]:
+                print("Slot occupied by other server")
+                return False
+        for i in range(self.problem.sizes[s]):
+            self.available_slots[(loc[0], loc[1] + i)] = False
+        self.locations[s] = loc
+        # Update row capacity
+        self.rows[loc[0]][0] += self.problem.capacities[s]
+        # Update row free spaces
+        self.rows[loc[0]][1] -= self.problem.sizes[s]
+        self.unallocated.remove(s)
+        return True
+
+    def add_server_pool(self, s, p):
+        """
+        Adds server s to pool p.
+        Server s must already have a location
+        """
+        if s not in self.locations.keys():
+            print("Server location not yet assigned.")
+            return False
+        elif p >= self.problem.P:
+            print("Trying to allocate server to non-existent pool")
+            return False
+        self.pools[s] = p
+        # Update pool capacity
+        self.pool_caps[p] += self.problem.capacities[s]
+        return True
 
     def print_solution(self, filename):
         """Print solution to file."""
@@ -117,6 +167,16 @@ if __name__ == "__main__":
     solution.add_server(3, (0, 4), 1)
     solution.print_solution("../../outputs/test.txt")
     print(solution.score())
+
+    new_solution = Solution(test)
+    solution.add_server(0, (0, 1), 0)
+    solution.add_server(1, (1, 0), 1)
+    solution.add_server(2, (1, 3), 0)
+    solution.add_server_loc(3, (0, 4))
+    solution.add_server_pool(3,1)
+    solution.print_solution("../../outputs/test.txt")
+    print(solution.score())
+
     check_solution_file(test, "../../outputs/test.txt")
     problem = Problem("../../inputs/dc.in")
     check_solution_file(problem, "../../outputs/stupid.txt")
