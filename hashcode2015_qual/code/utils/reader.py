@@ -29,11 +29,13 @@ class Problem:
                 self.available[coords] = False
             self.sizes = {} # Server size
             self.capacities = {} # Server capacity
+            self.caps_to_sizes = {} # Server capacity per size
             for i in range(self.M):
                 line = f.readline()
                 size, capacity = [int(j) for j in line.split()]
                 self.sizes[i] = size
                 self.capacities[i] = capacity
+                self.caps_to_sizes[i] = capacity/size
         assert len(self.available) == self.R*self.S
         assert len([k for k, v in self.available.items() if not v]) == self.U
         assert len(self.sizes) == self.M

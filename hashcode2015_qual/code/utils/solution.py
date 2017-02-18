@@ -1,6 +1,6 @@
 """Class for storing solution to problem."""
 from .reader import Problem
-
+import pdb
 class Solution:
     def __init__(self, problem):
         self.problem = problem
@@ -11,7 +11,7 @@ class Solution:
         self.unallocated = list(range(self.problem.M))
         self.available_slots = problem.available.copy()
         for r in range(self.problem.R): # Tuple of capacity and free space for each row
-            self.rows[r] = (0,sum([self.available_slots[(r,slot)] for slot in range(self.problem.S)]))
+            self.rows[r] = [0,sum([self.available_slots[(r,slot)] for slot in range(self.problem.S)])]
 
     def add_server(self, s, loc, p):
         """Adds server s to location loc and pool p."""
@@ -127,6 +127,27 @@ class Solution:
                     pool_capac[p][j] += self.problem.capacities[s]
         return min(pool_capac[p])
 
+    def score2(self):
+        """Defined score"""
+        pool_capac = [[0]*self.problem.R for _ in range(self.problem.P)]
+        for s, p in self.pools.items():
+            loc = self.locations[s]
+            for j in range(self.problem.R):
+                if j != loc[0]:
+                    pool_capac[p][j] += self.problem.capacities[s]
+        return min([min(gc) for gc in pool_capac])
+
+    def guaranteed_capacity2(self, p):
+        """Returns guaranteed capacity of pool p"""
+        pool_capac = [0]*self.problem.R
+        for s in self.pools.keys():
+            if self.pools[s] == p:
+                loc = self.locations[s]
+                for j in range(self.problem.R):
+                    if j != loc[0]:
+                        pool_capac[j] += self.problem.capacities[s]
+        return min(pool_capac)
+
 def check_solution_file(problem, filename):
     """Check solution file is valid"""
     M = problem.M
@@ -179,5 +200,9 @@ if __name__ == "__main__":
 
     check_solution_file(test, "../../outputs/test.txt")
     problem = Problem("../../inputs/dc.in")
+    print("stupid:")
     check_solution_file(problem, "../../outputs/stupid.txt")
+    print("dp:")
     check_solution_file(problem, "../../outputs/dp.txt")
+    print("greedy:")
+    check_solution_file(problem, "../../outputs/greedy.txt")
