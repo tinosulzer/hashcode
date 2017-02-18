@@ -22,8 +22,8 @@
 ---
 ### Basic algorithms to consider
 
--[ ] Random
--[ ] Greedy
--[ ] Dynamic Programming
--[ ] Genetic
--[ ] Integer Programming (Branch and Bound)
+- Random
+- Greedy
+- Dynamic Programming
+- Genetic
+- Integer Programming (Branch and Bound)
