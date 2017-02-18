@@ -18,3 +18,12 @@
 | 18:20 - 18:25 | Debrief on structure of Problem and Solution classes |all |
 | 18:25 - 18:35 | Get stupid solution in | 2 |
 | 18:25 - onwards | Iterate towards better solution | all |
+
+---
+### Basic algorithms to consider
+
+-[ ] Random
+-[ ] Greedy
+-[ ] Dynamic Programming
+-[ ] Genetic
+-[ ] Integer Programming (Branch and Bound)
